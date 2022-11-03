@@ -1,0 +1,62 @@
+from math import exp, log
+import scipy.stats
+import numpy as np
+
+#Basic European Vanilla Call-Put Option Pricing using Black-Scholes formula
+
+def norm_cdf(x):
+    return scipy.stats.norm(0, 1).cdf(x)
+
+def norm_pdf(x):
+    return scipy.stats.norm(0, 1).pdf(x)
+
+def d_j(j, S, K, r, v, T):
+    return (log(S/K) + (r + ((-1)**(j-1))*0.5*v*v)*T)/(v*(T**0.5))
+
+def vanilla_price(S, K, r, v, T, type = "c"):
+    """
+    Price of a European call option: 
+        - Struck at Kpython
+        - Spot S
+        - Constant rate r
+        - Constant vol v (over the life of the option) 
+        - Time to maturity T
+        
+    Delta measures the rate of change of the theoretical option value with respect to changes in the underlying asset’s price.
+    Gamma measures the rate of change in the delta with respect to changes in the underlying price.
+    Vega measures sensitivity to volatility. Vega is the derivative of the option value with respect to the volatility of the underlying asset.
+    Theta measures the sensitivity of the value of the derivative to the passage of time - time decay.
+    Rho measures the sensitivity to the interest rate.
+    """
+    d1 = d_j(1, S, K, r, v, T)
+    d2 = d_j(2, S, K, r, v, T)
+    try:
+        if type == 'c':
+            price =  S * norm_cdf(d1) - K*exp(-r*T) * norm_cdf(d2)
+            delta_calc = norm_cdf(d1)
+            theta_calc = -S * norm_pdf(d1)*v / (2*np.sqrt(T)) - r*K*np.exp(-r*T)*norm_cdf(d2)
+            rho_calc = K*T*np.exp(-r*T)*norm_cdf(d2)
+            print('\nCall option \n')
+        elif type == 'p':
+            price =  -S * norm_cdf(-d1) + K*exp(-r*T) * norm_cdf(-d2)
+            delta_calc = -norm_cdf(-d1)
+            theta_calc = -S*norm_pdf(d1)*v/(2*np.sqrt(T)) + r*K*np.exp(-r*T)*norm_cdf(-d2)
+            rho_calc = -K*T*np.exp(-r*T)*norm_cdf(-d2)
+            print('\nPut option \n')
+        gamma_calc = norm_pdf(d1)/(S * v * np.sqrt(T))
+        vega_calc = S*norm_pdf(d1)*np.sqrt(T)
+        
+        #Print Everything
+        print("Option Price: ", price)
+        print("       Delta: ", delta_calc)
+        print("       Gamma: ", gamma_calc)
+        print("       Vega : ", vega_calc)
+        print("       Theta: ", theta_calc)
+        print("       Rho  : ", rho_calc)
+        
+        return price, gamma_calc, delta_calc, vega_calc, theta_calc, rho_calc
+    except:
+        print("Please, type 'c' for Call or 'p' for Put!")
+
+#Example
+print(vanilla_price(100, 100, 0.05, 0.2, 1, 'c'))

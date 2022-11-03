@@ -1,0 +1,17 @@
+from cmath import sqrt
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+def brownianmotion(T,N):
+    x = list(range(N))
+    y = [0]
+    for i in range(N-1):
+        if random.randint(0,1) == 1:    
+            y.append(y[i]+sqrt(T/N))
+        else:
+            y.append(y[i]-sqrt(T/N))
+    plt.plot(x,y)
+    plt.show() 
+    
+brownianmotion(10,100000)

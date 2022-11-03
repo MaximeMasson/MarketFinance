@@ -1,0 +1,98 @@
+import datetime as dt
+import pandas as pd
+import numpy as np
+
+from pandas_datareader import data as pdr
+import matplotlib.pyplot as plt
+
+### We import all the needeed data about the option price
+end = dt.datetime.now()
+start = dt.datetime(2020,1,1)
+
+df = pdr.get_data_yahoo(['CBA.AX'], start, end)
+Close = df.Close
+Close.tail()
+
+log_returns = np.log(df.Close/df.Close.shift(1)).dropna()
+TRADING_DAYS = 20
+volatility = log_returns.rolling(window=TRADING_DAYS).std()*np.sqrt(252)
+
+volatility.plot()
+#The historical volatility & the price of the option
+volatility.iloc[-1], Close.iloc[-1]
+
+### Then, we define a function to determine the implied volatility of an asset thanks to the Newton-Raphson method
+
+from py_vollib.black_scholes.implied_volatility import implied_volatility as iv
+from py_vollib.black_scholes import black_scholes as bs
+from py_vollib.black_scholes.greeks.analytical import vega, delta
+
+def implied_vol(S0, K, T, r, market_price, flag='c', tol=0.00001):
+    """Calculating the implied volatility of an European option
+        S0: stock price
+        K: strike price
+        T: time to maturity
+        r: risk-free rate
+        market_price: option price in market
+    """
+    max_iter = 250 #max no. of iterations
+    vol_old = 0.1 #initial guess 
+    
+    for k in range(max_iter):
+        bs_price = bs(flag, S0, K, T, r, vol_old)
+        Cprime = vega(flag, S0, K, T, r, vol_old)*100
+        C = bs_price - market_price
+        vol_new = vol_old - C/Cprime
+        new_bs_price = bs(flag, S0, K, T, r, vol_new)
+        if (abs(vol_old-vol_new) < tol or abs(new_bs_price-market_price) < tol):
+            break
+        vol_old = vol_new
+    implied_vol = vol_new
+    return implied_vol
+
+
+### We create a bid ans a ask for each type of function
+S0 = 102 
+atm_options = [[dt.date(2021,10,18),102,[2.585,3.25],[4.600,5.300]],]
+
+call_bids,call_asks,put_bids,put_asks, = [],[],[],[]
+IV_DTE = []
+
+### Ten, we define their implied volatility
+
+for i in atm_options:
+    date, K = i[0], i[1]
+    DTE = (date - dt.date(2021,7,30)).days
+    T = DTE/365
+    r = 0.02
+    call_bid, call_ask = i[2]
+    put_bid, put_ask = i[3] 
+    call_bids.append(implied_vol(S0, K, T, r, call_bid, flag='c')*100)
+    call_asks.append(implied_vol(S0, K, T, r, call_ask, flag='c')*100)
+    put_bids.append(implied_vol(S0, K, T, r, put_bid, flag='p')*100)
+    put_asks.append(implied_vol(S0, K, T, r, put_ask, flag='p')*100)
+    IV_DTE.append(DTE)
+print(call_bids,call_asks,put_bids,put_asks)
+
+### We define some example value to compute everything
+
+K = 102
+N = 11 # 11 weeks
+sigma = 0.30
+S0 = 102
+DTE = (dt.date(2021,10,18) - dt.date(2021,7,30)).days
+T = DTE/365
+r = 0.02
+DT = T/N
+TTE = [DT*N-DT*i for i in range(0,N+1)]
+
+### We calculate the greek Delta
+
+def calc_delta(flag, price, K, time, r, sigma, position='s'):
+    if time == 0:
+        return np.nan
+    else:
+        if position=='l':
+            return int(delta(flag, price, K, time, r, sigma)*100)
+        else:
+            return -int(delta(flag, price, K, time, r, sigma)*100)

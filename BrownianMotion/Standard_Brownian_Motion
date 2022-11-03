@@ -1,0 +1,16 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+def brownianmotion(N):
+    x = list(range(N))
+    y = [0]
+    for i in range(N-1):
+        if random.randint(0,1) == 1:    
+            y.append(y[i]+1)
+        else:
+            y.append(y[i]-1)
+    plt.plot(x,y)
+    plt.show()
+    
+brownianmotion(10000)
