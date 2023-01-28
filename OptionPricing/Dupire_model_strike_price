@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import yfinance as yf
 import scipy.stats as norm
+from datetime import datetime
 
 # Function to calculate the volatility using Dupire's model
 def dupire_volatility(data, S, T):
@@ -22,7 +23,8 @@ def black_scholes(S, K, r, T, vol):
     return S * norm.norm(0, 1).cdf(d1) - K * np.exp(-r * T) * norm.norm(0, 1).cdf(d2)
 
 # Importer les données à partir de yfinance
-data = yf.download('TSLA', start="2022-01-01", end="2022-12-31")
+today = datetime.now()
+data = yf.download('TTE.PA', start="2020-01-01", end=today)
 
 # Ajouter les données à notre dataframe
 data['strike_price'] = data['Close']
@@ -30,31 +32,24 @@ data['spot_price'] = data['Close']
 data['interest_rate'] = 0.02
 data['maturity'] = (data.index - data.index[0]) / np.timedelta64(1, 'D')
 
-# Calculate volatility for each maturity
+# Calculate volatility for each strike price
 volatilities = {}
 for i in range(len(data)):
-    maturity = data['maturity'][i]
-    if maturity not in volatilities:
-        volatilities[maturity] = dupire_volatility(data, data['spot_price'][i], maturity)
+    strike_price = data['strike_price'][i]
+    if strike_price not in volatilities:
+        volatilities[strike_price] = dupire_volatility(data, data['spot_price'][i], strike_price)
 
 # Calculate option prices using Black-Scholes model
 option_prices = {}
 for i in range(len(data)):
-    maturity = data['maturity'][i]
     strike_price = data['strike_price'][i]
-    option_prices[maturity] = black_scholes(data['spot_price'][i], strike_price, data['interest_rate'][i], maturity, volatilities[maturity])
-
-# Lisser la courbe
-x = list(volatilities.keys())
-y = list(volatilities.values())
-z = np.polyfit(x, y, 4) # Rajouter une courbe de tendance qui lisse une courbe
-f = np.poly1d(z) 
-plt.plot(x, f(x), label='Smoothed Implied volatility') # Afficher la nouvelle courbe lissée 
+    maturity = data['maturity'][i]
+    option_prices[strike_price] = black_scholes(data['spot_price'][i], strike_price, data['interest_rate'][i], maturity, volatilities[strike_price])
 
 # Plot volatility and option prices
 plt.plot(list(volatilities.keys()), list(volatilities.values()), label='Implied volatility')
 #plt.plot(list(option_prices.keys()), list(option_prices.values()), label='Option Price')
-plt.xlabel('Maturity')
-plt.ylabel('Value')
+plt.xlabel('Strike Price')
+plt.ylabel('Implied Volatility')
 plt.legend()
 plt.show()

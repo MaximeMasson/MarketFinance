@@ -1,0 +1,11 @@
+def calc_delta(flag, price, K, time, r, sigma, position='s'):
+#     if time == 0:
+#         return np.nan
+#     else:
+#         if position == 'l':
+#             return int(delta(flag, price, K, time, r, sigma) * 100)
+#         else:
+#             delta_list = []
+#             for t in time:
+#                 delta_list.append(-int(delta(flag, price, K, t, r, sigma) * 100)) # The function return the delta for short position
+#             return delta_list

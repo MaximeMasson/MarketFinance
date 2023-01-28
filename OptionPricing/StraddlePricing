@@ -1,0 +1,52 @@
+import numpy as np
+import pandas as pd
+import time
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def straddle_pricer_mc(volatility=0.2, time_to_expiry=1, stock_price=100, risk_free_rate=0.02, mc_paths=1000):
+    """
+    This function calculates the straddle price using a Monte Carlo simulation.
+    The function takes 3 input parameters:
+    - volatility: the annual volatility of the underlying asset (default: 0.2)
+    - time_to_expiry: the time to expiration of the option in years (default: 1)
+    - mc_paths: the number of Monte Carlo paths to use in the simulation (default: 100000)
+    """
+    # Calculate the daily volatility
+    daily_vol = volatility / ( 252 ** 0.5 )
+    # Generate the random normal returns for each Monte Carlo path
+    rand_paths = pd.DataFrame( np.random.normal( 0, daily_vol, ( time_to_expiry*252, mc_paths ) ) )
+    # Calculate the mean of the absolute product of (1+rand_paths) -1
+    price = ( ( 1 + rand_paths ).prod() - 1 ).abs().mean() * stock_price
+    #Discount the price by the risk free rate
+    price = price * np.exp(-risk_free_rate * time_to_expiry)
+    # Plot a smoothed density estimate of the sum of the simulated returns for each Monte Carlo path
+    sns.kdeplot(rand_paths.sum(axis=0), fill=True)
+    plt.title("Simulated returns for each Monte Carlo path")
+    plt.xlabel("Returns")
+    plt.ylabel("Density")
+    plt.show()
+    return price
+
+def straddlePricer(volatility=0.2, time_to_expiry=1, stock_price=100, risk_free_rate=0.05):
+    """
+    This function calculates the straddle price using a closed-form formula.
+    The function takes 4 input parameters:
+    - volatility: the annual volatility of the underlying asset (default: 0.2)
+    - time_to_expiry: the time to expiration of the option in years (default: 1)
+    - stock_price: the current price of the underlying asset (default: 100)
+    - risk_free_rate: the annual risk-free rate (default: 0.05)
+    """
+    # Calculate the straddle price using the closed-form formula
+    price = 2. * ( ( 1 / np.sqrt( 2 * np.pi ) ) * volatility * stock_price * np.sqrt( time_to_expiry ) )
+    # Discount the price using the risk-free rate
+    price *= np.exp(-risk_free_rate * time_to_expiry)
+    return price
+
+start = time.time()
+result = straddle_pricer_mc(mc_paths=100000)
+result2 = straddlePricer()
+end = time.time()
+print("Straddle price with Monte-Carlo:", result)
+print("Straddle price:", result2)
+print("Execution time:", end-start)

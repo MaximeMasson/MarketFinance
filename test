@@ -1,4 +1,0 @@
-import scipy.stats.distributions as norm
-#print(help(norm.distributions))
-
-norm.cdf(7)
