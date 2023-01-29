@@ -86,7 +86,7 @@ mean_vol = np.mean([v for v in volatilities if np.isfinite(v)])
 # Replace NaN or Inf values with mean_vol
 volatilities = [v if np.isfinite(v) else mean_vol for v in volatilities] 
 
-def Plot3D(expiration_date, moneyness, volatilities, smooth=5, epsilon=4):
+def Plot3D(expiration_date, moneyness, volatilities, smooth=5, epsilon=5, ticker='AAPL'):
     # Create a grid of the expiration date and strike price
     xi, yi = np.meshgrid(expiration_date, moneyness)
 
@@ -100,9 +100,10 @@ def Plot3D(expiration_date, moneyness, volatilities, smooth=5, epsilon=4):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_surface(xi, yi, zi_smooth, cmap='hot')
-    ax.set_xlabel('Expiration Date')
+    ax.set_xlabel('Expiration Date (in weeks)')
     ax.set_ylabel('Moneyness')
-    ax.set_zlabel('Implied volatility')
+    ax.set_zlabel('Implied volatility for call options')
+    ax.set_title("Volatility surface of "+ ticker)
     plt.show()
     
-Plot3D(expiration_date, moneyness, volatilities,  smooth=5, epsilon=4)
+Plot3D(expiration_date, moneyness, volatilities)
