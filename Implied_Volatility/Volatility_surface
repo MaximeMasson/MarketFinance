@@ -1,0 +1,108 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from yahoo_fin import options as op
+import yfinance as yf
+from scipy.interpolate import Rbf
+import matplotlib.pyplot as plt
+import os
+import scipy.stats as norm
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from datetime import datetime
+import numpy as np
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+def import_call_options(ticker='AAPL'):
+    # Check if the call options data exists, if not, get it and save it as a CSV file
+    if os.path.exists(ticker+'.csv'):
+        return pd.read_csv(ticker+'.csv')
+    else:
+        expirationDates = op.get_expiration_dates(ticker)
+        callData = pd.DataFrame()
+        for idx, i in enumerate(expirationDates):
+            callData1 = op.get_calls(ticker, date = i)
+            callData1["Expiration Date"] = idx
+            print(idx)
+            callData = pd.concat([callData, callData1])
+        today = datetime.now()
+        callData['Spot'] = yf.download('AAPL', end=today)['Adj Close'][-1]
+        callData.to_csv(ticker+'.csv', index=False)
+        return callData
+
+# Get call options data for the specified ticker
+callData = import_call_options()
+
+# Extract the expiration date, strike price, and option price from the dataframe
+expiration_date = callData['Expiration Date']
+strike_price = callData['Strike']
+option_price = callData['Last Price']
+spot_price = callData['Spot']
+moneyness = strike_price / spot_price
+volatilities = callData['Implied Volatility'].str[:-1].astype(float) / 100
+
+# Replace inf and NaN values in moneyness with the mean value
+mean_moneyness = np.mean(moneyness[~np.isinf(moneyness) & ~np.isnan(moneyness)])
+moneyness[np.isinf(moneyness) | np.isnan(moneyness)] = mean_moneyness
+
+""""
+def implied_volatility(strike, spot, option_price, expiration_date, r=0.01):
+    def black_scholes(sigma, strike, spot, expiration_date, r):
+        d1 = (np.log(spot/strike) + (r + sigma**2/2)*expiration_date)/(sigma*np.sqrt(expiration_date))
+        d2 = d1 - sigma*np.sqrt(expiration_date)
+        price = spot*norm.norm(0, 1).cdf(d1) - strike*np.exp(-r*expiration_date)*norm.norm(0, 1).cdf(d2)
+        return price
+
+    def error_func(sigma, strike, spot, option_price, expiration_date, r):
+        price = black_scholes(sigma, strike, spot, expiration_date, r)
+        return price - option_price
+
+    def error_func_derivative(sigma, strike, spot, expiration_date, r):
+        d1 = (np.log(spot/strike) + (r + sigma**2/2)*expiration_date)/(sigma*np.sqrt(expiration_date))
+        derivative = spot*norm.norm(0, 1).pdf(d1)*np.sqrt(expiration_date)
+        return derivative
+
+    sigma = 1
+    tolerance = 1e-8
+    for i in range(1000):
+        derivative = error_func_derivative(sigma, strike, spot, expiration_date, r)
+        if np.abs(derivative) < tolerance:
+            break
+        sigma = sigma - error_func(sigma, strike, spot, option_price, expiration_date, r)/derivative
+
+    implied_vol = sigma
+    print(implied_vol)
+    return implied_vol
+
+# Calculate volatility for each strike price
+volatilities = []
+for i in range(len(callData)):
+    volatilities.append(implied_volatility(strike_price[i], spot_price[i], option_price[i],  expiration_date[i]))
+"""
+
+# Calculate the mean of non-NaN and non-Inf values
+mean_vol = np.mean([v for v in volatilities if np.isfinite(v)])
+
+# Replace NaN or Inf values with mean_vol
+volatilities = [v if np.isfinite(v) else mean_vol for v in volatilities] 
+
+def Plot3D(expiration_date, moneyness, volatilities, smooth=5, epsilon=4):
+    # Create a grid of the expiration date and strike price
+    xi, yi = np.meshgrid(expiration_date, moneyness)
+
+    # Interpolate the option price to create a surface
+    rbf = Rbf(expiration_date, moneyness, volatilities, function='inverse', smooth=smooth, epsilon=epsilon)
+
+    # Evaluate the rbf on the grid
+    zi_smooth = rbf(xi, yi)
+
+    # Plot the implied volatility surface
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot_surface(xi, yi, zi_smooth, cmap='hot')
+    ax.set_xlabel('Expiration Date')
+    ax.set_ylabel('Moneyness')
+    ax.set_zlabel('Implied volatility')
+    plt.show()
+    
+Plot3D(expiration_date, moneyness, volatilities,  smooth=5, epsilon=4)
