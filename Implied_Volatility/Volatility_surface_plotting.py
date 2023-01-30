@@ -34,7 +34,12 @@ def get_call_options(ticker='AAPL'):
         return calldata
 
 # Function to plot the implied volatility surface for a given stock
-def plot_volatility_surface(ticker='AAPL'):
+def plot_volatility_surface(ticker='AAPL', resolution=10, epsilon=1, smooth=2):
+    # 'ticker': symbol of the stock for which to plot the volatility surface
+    # 'resolution': the number of points to add to the grid for more resolution (if too high it can be very long to display the plot)
+    # 'epsilon': a parameter for the Rbf function, specifying the shape parameter for the radial basis function
+    # 'smooth': a parameter for the Rbf function, specifying the smoothing factor for the interpolation
+
     # Get the call option data for the stock
     call_data = get_call_options(ticker)
     
@@ -53,11 +58,11 @@ def plot_volatility_surface(ticker='AAPL'):
 
     # Add more resolution to the grid by adding points
     min_moneyness = np.min(moneyness)
-    max_moneyness = np.max(moneyness)
+    max_moneyness = min(np.max(moneyness), 4)
     min_expiration = np.min(expiration_date)
     max_expiration = np.max(expiration_date)
-    new_expiration_date = np.linspace(min_expiration, max_expiration, int((max_expiration-min_expiration)*10))
-    new_moneyness = np.linspace(min_moneyness, max_moneyness, int((max_moneyness-min_moneyness)*10))
+    new_expiration_date = np.linspace(min_expiration, max_expiration, int((max_expiration-min_expiration)*resolution))
+    new_moneyness = np.linspace(min_moneyness, max_moneyness , int((max_moneyness-min_moneyness)*resolution))
     xi, yi = np.meshgrid(new_expiration_date, new_moneyness)
     
     # Use griddata to perform 2D interpolation on the finer grid
@@ -65,7 +70,7 @@ def plot_volatility_surface(ticker='AAPL'):
     zi = griddata(points, volatilities, (xi, yi), method='nearest') 
 
     # Interpolate the option price to create a surface
-    rbf = Rbf(xi, yi, zi, function='multiquadric', smooth=1, epsilon=2)
+    rbf = Rbf(xi, yi, zi, function='multiquadric', smooth=smooth, epsilon=epsilon)
 
     # Evaluate the rbf on the grid
     zi_smooth = rbf(xi, yi)
@@ -74,6 +79,7 @@ def plot_volatility_surface(ticker='AAPL'):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_surface(xi, yi, zi_smooth, cmap='viridis')
+    #ax.plot_surface(xi, yi, zi, cmap='viridis')
     ax.set_xlabel('Expiration Date (in weeks)')
     ax.set_ylabel('Moneyness')
     ax.set_zlabel('Implied volatility')
@@ -82,4 +88,5 @@ def plot_volatility_surface(ticker='AAPL'):
     #Display the 3D Plot
     plt.show()
 
-plot_volatility_surface('TSLA')
+#plot_volatility_surface()
+plot_volatility_surface('TSLA', resolution=5, epsilon=4, smooth=4)
