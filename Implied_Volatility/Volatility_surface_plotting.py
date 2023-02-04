@@ -79,7 +79,8 @@ def plot_volatility_surface(ticker='AAPL', resolution=10, epsilon=1, smooth=2):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_surface(xi, yi, zi_smooth, cmap='viridis')
-    #ax.plot_surface(xi, yi, zi, cmap='viridis')
+    #ax.plot_surface(xi, yi, zi, cmap='nipy_spectral')
+    #plasma
     ax.set_xlabel('Expiration Date (in weeks)')
     ax.set_ylabel('Moneyness')
     ax.set_zlabel('Implied volatility')
