@@ -88,5 +88,5 @@ def plot_volatility_surface(ticker='AAPL', resolution=10, epsilon=1, smooth=2):
     #Display the 3D Plot
     plt.show()
 
-#plot_volatility_surface()
-plot_volatility_surface('TSLA', resolution=5, epsilon=4, smooth=4)
+plot_volatility_surface()
+#plot_volatility_surface('TSLA', resolution=5, epsilon=4, smooth=4)
