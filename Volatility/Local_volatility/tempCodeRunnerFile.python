@@ -1,0 +1,6 @@
+  # Tracer un graphique représentant la volatilité locale en fonction de l'échéance
+  plt.plot(data['Strike'], data['localVolatility'], '-o')
+  plt.xlabel('Strike')
+  plt.ylabel('Local Volatility')
+  plt.title(f'Local Volatility for {ticker} Options')
+  plt.show()
