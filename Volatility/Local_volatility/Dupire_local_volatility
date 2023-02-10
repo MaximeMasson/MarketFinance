@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+import scipy.stats as norm
+from scipy.optimize import minimize
+import yfinance as yf
+import os
+from datetime import datetime
+from yahoo_fin import options as op
+
+def getData(ticker='AAPL'):
+    # Check if call option data already exists as a csv file, if yes, return it
+    if os.path.exists('Volatility/Local_Volatility/'+ticker+'.csv'):
+        return pd.read_csv('Volatility/Local_Volatility/'+ticker+'.csv')
+    # If the call option data does not exist, retrieve it and save it as a csv file
+    else:
+        # Get the expiration dates for the stock options
+        expirationDates = op.get_expiration_dates(ticker)
+        # Initialize an empty dataframe to store the call option data
+        calldata = pd.DataFrame()
+        # Loop over the expiration dates and retrieve call option data for each date
+        for idx, i in enumerate(expirationDates):
+            calldata1 = op.get_calls(ticker, date = i)
+            # Add a column to store the expiration date index
+            calldata1["Expiration Date"] = idx + 1
+            # Concatenate the new call option data with the existing data
+            calldata = pd.concat([calldata, calldata1])
+        # Get the latest stock price (Spot Price) and add it to the call option data
+        today = datetime.now()
+        calldata['Spot'] = yf.download(ticker, end=today)['Adj Close'][-1]
+        # Save the call option data as a csv file for future use
+        calldata.to_csv('Volatility/Local_Volatility/'+ticker+'.csv', index=False)
+        return calldata
+
+
+def blackScholes(sigma, S, K, r, T, callPrice):
+  # modèle de Black-Scholes
+  d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
+  d2 = d1 - sigma * np.sqrt(T)
+  call = S * norm.norm(0, 1).cdf(d1) - K * np.exp(-r * T) * norm.norm(0, 1).cdf(d2)
+  return (call - callPrice) ** 2
+
+def localVolatility(ticker='AAPL'):
+  data = getData(ticker)
+  
+  # initialiser la volatilité à 0.3
+  sigma = 0.3
+  
+  # boucle sur chaque option
+  for i in range(data.shape[0]):
+    option = data.iloc[i]
+    S = option['Spot']
+    K = option['Strike']
+    r = 0.01
+    T = option['Expiration Date']
+    callPrice = option['Last Price']
+    
+    # ajuster la volatilité pour correspondre aux prix d'options du marché
+    res = minimize(blackScholes, sigma, args=(S, K, r, T, callPrice))
+    sigma = res.x[0]
+    
+    # stocker la volatilité pour cette option
+    data.loc[i, 'localVolatility'] = sigma
+  
+  return data
+ 
+print(localVolatility()[['localVolatility', 'Implied Volatility']])
