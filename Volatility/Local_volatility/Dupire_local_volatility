@@ -23,7 +23,7 @@ def getData(ticker='AAPL'):
         # Initialize an empty dataframe to store the call option data
         calldata = pd.DataFrame()
         # Loop over the expiration dates and retrieve call option data for each date
-        for idx, i in enumerate(expirationDates[:1]):
+        for idx, i in enumerate(expirationDates[6:7]):
             calldata1 = op.get_calls(ticker, date = i)
             # Add a column to store the expiration date index
             calldata1["Expiration Date"] = idx + 1
@@ -87,4 +87,5 @@ def localVolatility(ticker='AAPL'):
   plt.show()
   
   return data
- 
+
+localVolatility()
