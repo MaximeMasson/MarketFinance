@@ -1,0 +1,40 @@
+import numpy as np
+
+def asian_option_price(S, K, r, sigma, T, M, option_type):
+    """
+    Calcule le prix d'une option asiatique à la fois d'achat et de vente en utilisant l'algorithme de Monte Carlo.
+
+    :param S: prix actuel de l'actif sous-jacent
+    :param K: prix d'exercice de l'option
+    :param r: taux d'intérêt sans risque
+    :param sigma: volatilité de l'actif sous-jacent
+    :param T: durée de vie de l'option en années
+    :param M: nombre de simulations Monte Carlo à effectuer
+    :param option_type: type d'option, soit 'call' pour une option d'achat, soit 'put' pour une option de vente
+
+    :return: prix de l'option asiatique
+    """
+    # Calcul de la variance
+    variance = sigma ** 2 * T * (2 * T + 1) / (6 * T)
+
+    # Calcul du facteur stochastique
+    stochastic_factor = np.exp((r - 0.5 * variance) * T)
+
+    # Générer des échantillons aléatoires à partir d'une distribution normale standard
+    random_samples = np.random.standard_normal((M, int(T * 252)))
+
+    # Calculer le prix de l'option pour chaque échantillon
+    if option_type == 'call':
+        average_price = np.mean(S * np.cumprod(stochastic_factor * np.exp(sigma * np.sqrt(1 / 252) * random_samples), axis=1), axis=1)
+        payoffs = np.maximum(average_price - K, 0)
+    elif option_type == 'put':
+        average_price = np.mean(S * np.cumprod(stochastic_factor * np.exp(sigma * np.sqrt(1 / 252) * random_samples), axis=1), axis=1)
+        payoffs = np.maximum(K - average_price, 0)
+
+    # Calculer le prix moyen de l'option
+    option_price = np.exp(-r * T) * np.mean(payoffs)
+
+    return option_price
+
+option_price = asian_option_price(S=100, K=110, r=0.05, sigma=0.2, T=1, M=100000, option_type='call')
+print(option_price)

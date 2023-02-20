@@ -1,0 +1,38 @@
+import numpy as np
+import math
+
+# Define variables
+S0 = 100 # Initial stock price
+K = 110 # Strike price
+r = 0.05 # Risk-free rate
+T = 1 # Time to maturity
+sigma = 0.2 # Historical volatility
+n = 100 # Number of simulations
+m = 100 # Number of time steps
+
+# Define the stochastic volatility function
+def vol_stochastic(sigma, n, m):
+    dt = T / m
+    vol = np.zeros((n, m+1))
+    vol[:, 0] = sigma
+    for i in range(n):
+        for j in range(1, m+1):
+            vol[i, j] = vol[i, j-1] + np.random.normal() * math.sqrt(dt) * vol[i, j-1]
+    return vol
+
+# Define the Monte Carlo function
+def monte_carlo(S0, K, r, T, sigma, n, m):
+    dt = T / m
+    vol = vol_stochastic(sigma, n, m)
+    stock = np.zeros((n, m+1))
+    stock[:, 0] = S0
+    for i in range(n):
+        for j in range(1, m+1):
+            stock[i, j] = stock[i, j-1] * math.exp((r - 0.5 * vol[i, j-1]**2) * dt + vol[i, j-1] * np.random.normal() * math.sqrt(dt))
+    payoff = np.maximum(stock[:, -1] - K, 0)
+    option_price = math.exp(-r * T) * np.mean(payoff)
+    return option_price
+
+# Call the Monte Carlo function and print the option price
+option_price = monte_carlo(S0, K, r, T, sigma, n, m)
+print("The option price is:", option_price)
