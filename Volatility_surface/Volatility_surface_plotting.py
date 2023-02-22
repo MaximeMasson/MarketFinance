@@ -11,8 +11,8 @@ import os
 # Function to get the call option data for a given stock ticker symbol
 def get_call_options(ticker='AAPL'):
     # Check if call option data already exists as a csv file, if yes, return it
-    if os.path.exists('Volatility/Volatility_surface/'+ticker+'.csv'):
-        return pd.read_csv('Volatility/Volatility_surface/'+ticker+'.csv')
+    if os.path.exists('Volatility_surface/'+ticker+'.csv'):
+        return pd.read_csv('Volatility_surface/'+ticker+'.csv')
     # If the call option data does not exist, retrieve it and save it as a csv file
     else:
         # Get the expiration dates for the stock options
@@ -30,7 +30,7 @@ def get_call_options(ticker='AAPL'):
         today = datetime.now()
         calldata['Spot'] = yf.download(ticker, end=today)['Adj Close'][-1]
         # Save the call option data as a csv file for future use
-        calldata.to_csv('Volatility/Volatility_surface/'+ticker+'.csv', index=False)
+        calldata.to_csv('Volatility_surface/'+ticker+'.csv', index=False)
         return calldata
 
 # Function to plot the implied volatility surface for a given stock
