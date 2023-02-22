@@ -9,7 +9,6 @@ import os
 def scrap_article(number):    
     load_dotenv()
     PASSWORD = os.getenv("PASSWORD")
-    print(PASSWORD)
     
     titles = article_market(number)
 
