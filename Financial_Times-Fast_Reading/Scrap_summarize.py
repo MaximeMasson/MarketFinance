@@ -16,7 +16,7 @@ def ScrapSum():
     while titles is None:
         try:
             # Connect to the website and scrape articles
-            titles = scrap_article(1)
+            titles = scrap_article(11)
         except:
             pass
 
@@ -55,7 +55,7 @@ def ScrapSum():
                 pass
 
     #Save the scraped and processed data into an Excel file
-    df.to_excel('article.xlsx', index=False)
+    df.to_excel('Financial_Times-Fast_Reading/article.xlsx', index=False)
 
     #Print a message to indicate that the program has finished running
     print('Done')

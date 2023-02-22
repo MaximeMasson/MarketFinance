@@ -1,10 +1,11 @@
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 from datetime import date
+import os
 
 def CreateHTML():
     # Read data from an Excel file using pandas
-    df = pd.read_excel("article.xlsx")
+    df = pd.read_excel("Financial_Times-Fast_Reading/article.xlsx")
 
     # Retrieve values from the first column and first row to use as title and article
     titre = df.iloc[0, 0]
@@ -12,7 +13,7 @@ def CreateHTML():
 
     # Use Jinja2 to generate HTML code
     env = Environment(loader=FileSystemLoader("."))
-    template = env.get_template("template.html")
+    template = env.get_template("Financial_Times-Fast_Reading/template.html")
 
     # Fill the template with data from each row
     cards = []
@@ -24,5 +25,5 @@ def CreateHTML():
 
     # Save the result to an HTML file
     today = date.today()
-    with open("Article/ft_top_"+ today.strftime("%Y-%m-%d") +".html", "w", encoding='utf-8') as f:
+    with open("Financial_Times-Fast_Reading/Article/ft_top_"+ today.strftime("%Y-%m-%d") +".html", "w", encoding='utf-8') as f:
         f.write(html_output)    
