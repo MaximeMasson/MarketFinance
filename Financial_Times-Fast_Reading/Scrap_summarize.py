@@ -17,7 +17,7 @@ def ScrapSum():
     while titles is None:
         try:
             # Connect to the website and scrape articles
-            titles = scrap_article(1)
+            titles = scrap_article(8)
         except:
             pass
 
