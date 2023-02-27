@@ -17,7 +17,7 @@ def ScrapSum():
     while titles is None:
         try:
             # Connect to the website and scrape articles
-            titles = scrap_article(8)
+            titles = scrap_article(6)
         except:
             pass
 
@@ -30,7 +30,7 @@ def ScrapSum():
         completions = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
-        max_tokens=2500,
+        max_tokens=2000,
         n=1,
         stop=None,
         temperature=0.6,
