@@ -3,7 +3,7 @@ from jinja2 import Environment, FileSystemLoader
 from datetime import date
 import os
 
-def CreateHTML():
+def CreateHTML():   
     # Read data from an Excel file using pandas
     df = pd.read_excel("Financial_Times-Fast_Reading/article.xlsx")
 

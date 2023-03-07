@@ -32,6 +32,7 @@ def scrap_article(number):
     driver.find_element(By.ID, "i0116").send_keys("maxime.masson@edhec.com")
     wait.until(expected_conditions.element_to_be_clickable((By.ID, 'idSIButton9')))
     driver.find_element(By.ID, "idSIButton9").click()
+    wait.until(expected_conditions.element_to_be_clickable((By.ID, 'idA_PWD_ForgotPassword')))
     driver.find_element(By.ID, "i0118").send_keys(PASSWORD)
 
     # Submit login form

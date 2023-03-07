@@ -17,27 +17,27 @@ def ScrapSum():
     while titles is None:
         try:
             # Connect to the website and scrape articles
-            titles = scrap_article(1)
+            titles = scrap_article(5)
         except:
             pass
 
     #Create a Pandas DataFrame to store the scraped data
     df = pd.DataFrame(titles[0:],columns=["Nom","URL","Article"])
 
+    # Read data from an Excel file using pandas
+    #df = pd.read_excel("Financial_Times-Fast_Reading/article.xlsx")
+    
     #Define a function to request text completion from OpenAI API
-    def openai_request(prompt):
-        # Generate completions for the prompt
-        completions = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=2000,
-        n=1,
-        stop=None,
-        temperature=0.6,
-        )
-        # Get the generated text and return it
-        message = completions.choices[0].text
-        return message
+    def openai_request(ask, article):
+        chat = openai.ChatCompletion.create(
+  model="gpt-3.5-turbo",
+  messages=[
+        {"role": "system", "content": ask},
+        {"role": "user", "content": article},
+    ]
+)
+        reply = chat.choices[0].message.content
+        return reply
 
     #Iterate through each row of the DataFrame and request text completion from OpenAI API
     for i in range(len(df)):
@@ -47,9 +47,9 @@ def ScrapSum():
                 # Connect to OpenAI API and request text completion for article summarization and translation
                 print("Analyse article ",i + 1)
                 # Use OpenAI API to summarize the article
-                df.loc[i, 'Resume'] = openai_request(df.loc[i, 'Article'] + "\nThe article: " + PROMPT)
+                df.loc[i, 'Resume'] = openai_request(PROMPT ,df.loc[i, 'Article'])
                 # Use OpenAI API to rewrite the article title in French
-                df.loc[i, 'Trad_title'] = openai_request(df.loc[i, 'Nom'] + "\nRewrite this in French.\n")
+                df.loc[i, 'Trad_title'] = openai_request("Rewrite it in French", df.loc[i, 'Nom'])
                 test = True
             except Exception as e:
                 print(e)
@@ -60,3 +60,4 @@ def ScrapSum():
 
     #Print a message to indicate that the program has finished running
     print('Done')
+    

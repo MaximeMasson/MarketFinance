@@ -1,4 +1,4 @@
-from Scrap_summarize import ScrapSum
+from Scrap_summarize_chatgpt import ScrapSum
 from Create_html import CreateHTML
 
 ScrapSum()
