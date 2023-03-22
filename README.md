@@ -15,7 +15,7 @@ This directory contains code related to modeling the volatility surface of a fin
 - Local_volatility : 
 This directory contains code related to modeling the local volatility of a financial asset. Local volatility is a measure of volatility that varies with price and time.
 
-<img src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility_surface/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility_surface/volatility_surface_AAPL.png" width="400" height="400" />
+<img src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility_surface/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility_surface/volatility_surface_AAPL.png" width="460" height="401" />
 
 - Brownian_Motion : 
 This directory contains code related to simulating Brownian motion. It is used to model the behavior of a financial asset.
