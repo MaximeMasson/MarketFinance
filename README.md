@@ -4,7 +4,7 @@ I am storing all of my projects in Python related to market finance here.
 This project contains the following directories:
 
 - Financial_Times-Fast_Reading : 
-This directory contains an application that can summarize the daily market news of the Financial Times. These resources can help quickly understand the latest news. I didn't optimised it yet, but updates will be made soon.
+This directory contains an application that can summarize the daily market news of the Financial Times using the Chat GPT API. These resources can help quickly understand the latest news. I didn't optimised it yet, but updates will be made soon.
 
 - Option_Pricing : 
 This directory contains my code for pricing financial options using Monte Carlo and Black-Scholes methods. I also simulate the Greeks (sensitivity measures) of the options. I am currently working on making further modifications to the code.
