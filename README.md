@@ -1,4 +1,4 @@
-# Welcome to my Github
+# Welcome to my Github !
 Hey, I'm Maxime, a student in market finance, and here, I store all my projects related to market finance (exclusively in Python). 
 
 This project contains the following directories:
