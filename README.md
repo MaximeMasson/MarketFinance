@@ -1,5 +1,5 @@
 # My Python projects for Market Finance
-I am storing all of my projects in Python related to market finance here. 
+Welcome to my Github where I am storing all my projects in Python related to market finance. 
 
 This project contains the following directories:
 
