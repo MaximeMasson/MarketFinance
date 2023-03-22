@@ -1,5 +1,5 @@
 # My Python projects for Market Finance
-Welcome to my Github where I am storing all my projects in Python related to market finance. 
+Hey, I'm Maxime, a student in market finance, and welcome to my Github. Here, I store all my projects related to market finance (exclusively in Python). 
 
 This project contains the following directories:
 
