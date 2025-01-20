@@ -1,6 +1,8 @@
 # Welcome to my Github!
 
-Hey, I'm Maxime, a student in market finance, and here, I store all my projects related to market finance (exclusively in Python). I have gained valuable experience through my internships at Barclays and Natixis, where I worked as a Fixed Income Trader Intern. During these experiences, I contributed to pricing models, risk calculations, and the development of dashboards and algorithmic tools, improving operational efficiency and generating actionable trade ideas.
+Hey, I'm Maxime, a student in market finance, and here, I store all my projects related to market finance (exclusively in Python). 
+
+I have gained valuable experience through my internships at Barclays and Natixis, where I worked as a Fixed Income Trader Intern. During these experiences, I contributed to pricing models, risk calculations, and the development of dashboards and algorithmic tools, improving operational efficiency and generating actionable trade ideas.
 
 - **Barclays:** Developed a web-based dashboard to manage daily swaption expiries, significantly improving trader efficiency by automating error detection and booking processes. Also implemented machine learning models to forecast volatility surface strategies, which were integrated into an intuitive dashboard for actionable trade and hedge insights.
 - **Natixis:** Created an algorithmic tool generating indicators using statistical models and yield curve analysis to support bond spread and fly strategies. Additionally, built a liquidity flow analysis dashboard used by traders and sales teams to monitor real-time client demand trends, reducing the desk's average cover ratio.
@@ -29,7 +31,7 @@ This directory contains code related to modeling the volatility surface of a fin
 Here is an example for AAPL at the beginning of 2023:
 
 <p align="center">
-<img src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility%20Surface/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility%20Surface/volatility_surface_AAPL.png" width="460" height="401" />
+<img src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility Surface Modelisation (2023)/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility Surface Modelisation (2023)/volatility_surface_AAPL.png" width="460" height="401" />
 </p>
 
 ---
