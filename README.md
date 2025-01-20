@@ -15,7 +15,7 @@ This directory contains code related to modeling the volatility surface of a fin
 Here is an example for AAPL at the beginning of 2023:
 
 <p align="center">
-<img src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility_surface/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility_surface/volatility_surface_AAPL.png" width="460" height="401" />
+<img src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility Surface/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/Market_Finance/blob/main/Volatility Surface/volatility_surface_AAPL.png" width="460" height="401" />
 </p>
 
 - Local_volatility : 
