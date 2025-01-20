@@ -15,7 +15,7 @@ This directory contains code related to analyzing and calculating the fair value
 ## Machine Learning - Loan Default Probability Models (2025)
 This directory contains machine learning models for predicting loan default probabilities. The focus is on using historical data to understand credit risk and build predictive models for risk assessment.
 
-## Volatility Surface (2024)
+## Volatility Surface (2023)
 This directory contains code related to modeling the volatility surface of a financial asset. The volatility surface visually represents implied volatility as a function of the asset's price and time to maturity.
 
 Here is an example for AAPL at the beginning of 2023:
