@@ -1,6 +1,6 @@
 # Welcome to my Github!
 
-Hey, I'm Maxime, a student in market finance, and here, I store all my projects related to market finance (exclusively in Python). 
+Hey, I'm Maxime, a student in market finance, and here, I store all my projects related to market finance. 
 
 I have gained valuable experience through my internships at Barclays and Natixis, where I worked as a Fixed Income Trader Intern. During these experiences, I contributed to pricing models, risk calculations, and the development of dashboards and algorithmic tools, improving operational efficiency and generating actionable trade ideas.
 
