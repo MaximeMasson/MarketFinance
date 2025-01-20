@@ -31,7 +31,7 @@ This directory contains code related to modeling the volatility surface of a fin
 Here is an example for AAPL at the beginning of 2023:
 
 <p align="center">
-<img src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility Surface/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility Surface/volatility_surface_AAPL.png" width="460" height="401" />
+<img src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility Surface Modelisation (2023)/volatility_surface_AAPL.png" data-canonical-src="https://github.com/MaximeMasson/MarketFinance/blob/main/Volatility Surface Modelisation (2023)/volatility_surface_AAPL.png" width="460" height="401" />
 </p>
 
 ---
